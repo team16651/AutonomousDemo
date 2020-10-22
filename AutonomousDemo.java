@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
@@ -64,6 +65,7 @@ public class AutonomousDemo extends LinearOpMode {
     /* Declare OpMode members. */
     HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
+    ColorSensor color_sensor;
 
 
     static final double     FORWARD_SPEED = 0.6;
@@ -95,9 +97,19 @@ public class AutonomousDemo extends LinearOpMode {
             telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+        
+         // Step 2: Get Color
+            while (color_sensor.red() > 20) {
+                 robot.leftDrive.setPower(FORWARD_SPEED);
+                robot.rightDrive.setPower(FORWARD_SPEED);
+                runtime.reset();
+                while (opModeIsActive() && (runtime.seconds() < 2.0)) {
+                    telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+                    telemetry.update();
+                }
+       }           
 
-
-        // Step 4:  Stop.
+        // Step 3:  Stop.
         robot.leftDrive.setPower(0);
         robot.rightDrive.setPower(0);
 
