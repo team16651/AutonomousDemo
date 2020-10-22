@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.hardware.robotcore.hardware.ColorSensor;
+
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
@@ -63,9 +63,10 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class AutonomousDemo extends LinearOpMode {
 
     /* Declare OpMode members. */
+    ColorSensor color;
     HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
-    ColorSensor color_sensor;
+
 
 
     static final double     FORWARD_SPEED = 0.6;
@@ -73,6 +74,9 @@ public class AutonomousDemo extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        
+        color = hardwareMap.get(ColorSensor.class, "color");
+        color = hardwareMap.colorSensor.get("color");
 
         /*
          * Initialize the drive system variables.
@@ -86,8 +90,12 @@ public class AutonomousDemo extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        
+        while(opModeIsActive() && !isStopRequested()){
+            telemetry.addData("red:", color.red());
+            
 
-        // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
+
 
         // Step 1:  Drive forward for 3 seconds
         robot.leftDrive.setPower(FORWARD_SPEED);
@@ -97,17 +105,7 @@ public class AutonomousDemo extends LinearOpMode {
             telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-        
-         // Step 2: Get Color
-            while (color_sensor.red() > 20) {
-                 robot.leftDrive.setPower(FORWARD_SPEED);
-                robot.rightDrive.setPower(FORWARD_SPEED);
-                runtime.reset();
-                while (opModeIsActive() && (runtime.seconds() < 2.0)) {
-                    telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
-                    telemetry.update();
-                }
-       }           
+                 
 
         // Step 3:  Stop.
         robot.leftDrive.setPower(0);
